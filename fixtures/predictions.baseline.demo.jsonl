@@ -1,0 +1,5 @@
+{"record_id":"qa_scorecard-0001","task_family":"qa_scorecard","output":{"criteria":{"criterion_01":"pass","criterion_02":"fail","criterion_03":"not_applicable"},"total_score":57.1429},"telemetry":{"latency_ms":820,"input_tokens":2200,"output_tokens":310}}
+{"record_id":"deal_summary-0001","task_family":"deal_summary","output":{"outcome":"follow_up","primary_need":"career_growth","objections":["price"],"next_step":"call tomorrow","facts":["client wants career growth","client raised price objection"]},"telemetry":{"latency_ms":910,"input_tokens":3100,"output_tokens":420}}
+{"record_id":"semantic_analytics-0001","task_family":"semantic_analytics","output":{"needs":["career_change"],"objections":["price"],"readiness":"warm","tariff_interest":["base"],"competitor_mentions":["alternative_course"]},"telemetry":{"latency_ms":780,"input_tokens":2500,"output_tokens":280}}
+{"record_id":"violation_flags-0001","task_family":"violation_flags","output":{"flags":{"policy_violation":"yes","pressure":"no","missing_consent":"insufficient_data"}},"telemetry":{"latency_ms":740,"input_tokens":2300,"output_tokens":190}}
+

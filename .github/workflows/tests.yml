@@ -1,0 +1,64 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install package
+        run: python -m pip install -e .
+
+      - name: Run unit and integration tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Run evaluation and release-gate smoke test
+        shell: bash
+        run: |
+          python -m conv_eval evaluate \
+            --gold fixtures/golden.demo.jsonl \
+            --predictions fixtures/predictions.baseline.demo.jsonl \
+            --manifest fixtures/run.baseline.demo.json \
+            --json-out /tmp/baseline.json \
+            --bootstrap 100 \
+            --seed 20260728
+          python -m conv_eval evaluate \
+            --gold fixtures/golden.demo.jsonl \
+            --predictions fixtures/predictions.candidate.demo.jsonl \
+            --manifest fixtures/run.candidate.demo.json \
+            --json-out /tmp/candidate.json \
+            --bootstrap 100 \
+            --seed 20260728
+          python -m conv_eval gate \
+            --baseline /tmp/baseline.json \
+            --candidate /tmp/baseline.json \
+            --config configs/regression_gates.demo.json \
+            --out /tmp/gate-pass.json
+          set +e
+          python -m conv_eval gate \
+            --baseline /tmp/baseline.json \
+            --candidate /tmp/candidate.json \
+            --config configs/regression_gates.demo.json \
+            --out /tmp/gate-fail.json
+          gate_exit=$?
+          set -e
+          test "$gate_exit" -eq 2
