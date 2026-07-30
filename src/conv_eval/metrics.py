@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import math
-import random
 from collections import Counter
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Iterable, Sequence
 from typing import Any
 
 
@@ -167,35 +166,3 @@ def mean_absolute_error(expected: Sequence[float], predicted: Sequence[float]) -
     if len(expected) != len(predicted):
         raise ValueError("expected and predicted lengths differ")
     return mean(abs(a - b) for a, b in zip(expected, predicted))
-
-
-def bootstrap_interval(
-    items: Sequence[Any],
-    statistic: Callable[[list[Any]], float],
-    *,
-    resamples: int,
-    seed: int,
-    confidence: float = 0.95,
-) -> dict[str, float | int]:
-    if resamples <= 0:
-        raise ValueError("resamples must be positive")
-    if not items:
-        return {
-            "low": 0.0,
-            "high": 0.0,
-            "confidence": confidence,
-            "resamples": resamples,
-        }
-    rng = random.Random(seed)
-    estimates: list[float] = []
-    for _ in range(resamples):
-        sample = [items[rng.randrange(len(items))] for _ in items]
-        estimates.append(float(statistic(sample)))
-    tail = (1 - confidence) / 2
-    return {
-        "low": percentile(estimates, tail),
-        "high": percentile(estimates, 1 - tail),
-        "confidence": confidence,
-        "resamples": resamples,
-    }
-

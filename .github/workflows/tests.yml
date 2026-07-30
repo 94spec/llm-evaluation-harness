@@ -31,6 +31,15 @@ jobs:
       - name: Run unit and integration tests
         run: python -m unittest discover -s tests -v
 
+      - name: The test count in the README matches reality
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual=$(python -m unittest discover -s tests 2>&1 | grep -oE 'Ran [0-9]+ test' | grep -oE '[0-9]+')
+          claimed=$(grep -oE '[0-9]+ (dependency-free )?tests' README.md | head -1 | grep -oE '^[0-9]+')
+          echo "README says $claimed, the suite has $actual"
+          test "$actual" = "$claimed"
+
       - name: Run evaluation and release-gate smoke test
         shell: bash
         run: |
