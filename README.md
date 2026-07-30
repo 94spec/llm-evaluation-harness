@@ -71,7 +71,7 @@ raters and Krippendorff’s alpha (nominal) for two or more raters.
 
 No third-party runtime dependencies are required.
 
-26 dependency-free tests cover the statistics, the schema, the gates and annotation
+125 dependency-free tests cover the statistics, the schema, the gates and annotation
 reliability.
 
 ```bash
